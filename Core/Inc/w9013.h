@@ -28,6 +28,7 @@ struct wacom_features {
 struct wacom_i2c {
 	I2C_HandleTypeDef *hi2c;
 	GPIO_TypeDef* GPIOx;
+	GPIO_TypeDef* GPIOxLED;
 	uint8_t data[WACOM_QUERY_SIZE];
 	uint16_t rst,irq;
 //	bool prox;// pen is in-range
@@ -36,6 +37,6 @@ struct wacom_i2c {
 
 void wacom_query_device(I2C_HandleTypeDef *hi2c, struct wacom_features *features);// digitizer feature query
 void wacom_i2c_irq();// IRQ handling the incoming HID cata from w9013
-void wacom_i2c_probe(I2C_HandleTypeDef *hi2c, GPIO_TypeDef* GPIOx, uint16_t RST_pin, uint16_t IRQ_stat_pin);// i2c probe
+void wacom_i2c_probe(I2C_HandleTypeDef *hi2c, GPIO_TypeDef* GPIOx, uint16_t RST_pin, GPIO_TypeDef* GPIOxLED, uint16_t IRQ_stat_pin);// i2c probe
 
 #endif /* INC_W9013_H_ */
