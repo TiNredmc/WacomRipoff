@@ -125,7 +125,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  uint8_t sendbuf[7]={0,0,0,0,0,0,0};
+
   while (1)
   {
     /* USER CODE END WHILE */

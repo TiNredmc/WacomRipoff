@@ -60,7 +60,7 @@ void wacom_i2c_irq()
 
 	// Store HID report packet before sending to host
 	// hid_report[0] = (tip << 0) | (eraser << 1) | (f1 << 2) | (f2 << 3) | (prox << 4);
-	hid_report[0] = ((data[3] & 0x01) << 0) | ((data[3] & 0x04) << 1) | ((data[3] & 0x02) << 2) | ((data[3] & 0x10) << 3) | ((data[3] & 0x20) << 4);
+	hid_report[0] = ((data[3] & 0x01 ? 1 : 0) << 0) | ((data[3] & 0x04 ? 1 : 0) << 1) | ((data[3] & 0x02 ? 1 : 0) << 2) | ((data[3] & 0x10) << 3) | ((data[3] & 0x20 ? 1 : 0) << 4);
 
     // hid_report[1] and hid_report[2] is for X position
 	hid_report[1] = data[6];// Send lower byte first
@@ -78,7 +78,7 @@ void wacom_i2c_irq()
 
 	// Send USB report
 	USBD_HID_SendReport(&hUsbDeviceFS, hid_report, sizeof(hid_report));
-
+//	printf("Wacom Raw Read %x , HID Raw Send %x\n", data[3], hid_report[0]);
 	// DONE
 	HAL_GPIO_WritePin(wacom_i2c.GPIOxLED, wacom_i2c.irq, GPIO_PIN_RESET);
 }

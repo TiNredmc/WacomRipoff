@@ -157,8 +157,8 @@ __ALIGN_BEGIN static uint8_t USBD_HID_CfgFSDesc[USB_HID_CONFIG_DESC_SIZ]  __ALIG
   0x00,         /*bAlternateSetting: Alternate setting*/
   0x01,         /*bNumEndpoints*/
   0x03,         /*bInterfaceClass: HID*/
-  0x01,         /*bInterfaceSubClass : 1=BOOT, 0=no boot*/
-  0x02,         /*nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse*/
+  0x00,         /*bInterfaceSubClass : 1=BOOT, 0=no boot*/
+  0x00,         /*nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse*/
   0,            /*iInterface: Index of string descriptor*/
   /******************** Descriptor of Joystick Mouse HID ********************/
   /* 18 */
@@ -373,14 +373,14 @@ __ALIGN_BEGIN static uint8_t HID_PEN_ReportDesc[HID_MOUSE_REPORT_DESC_SIZE]  __A
 	0xA1, 0x00,							// Collection : Physical
 		// Boolean 1 and 0 (1 means present, 0 means not present).
 		0x09, 0x42,						// Usage : Pen Tip
-		0x09, 0x45,						// Usage : Eraser Tip
+		0x09, 0x3C,						// Usage : Invert (Eraser Tip)
 		0x09, 0x44,						// Usage : 1st Barrel Button
 		0x09, 0x5A,						// Usage : 2nd Barrel Button
 		0x09, 0x32,						// Usage : pen is in-range
 		0x25, 0x01,						// Logical Max is 1
 		0x15, 0x00,						// Logical Min is 0
 		0x75, 0x05,						// Report size is 5 usages
-		0x95, 0x01,						// Report count is 1
+		0x95, 0x01,		  				// Report count is 1
 		0x81, 0x02,						// Input (Data, Var, Abs)
 		// fill all remain bit to make it byte align (8n).
 		0x75, 0x03,						// 1 Null usage
@@ -393,6 +393,8 @@ __ALIGN_BEGIN static uint8_t HID_PEN_ReportDesc[HID_MOUSE_REPORT_DESC_SIZE]  __A
 		0x09, 0x30,						// Usage : X axis
 		0x26, 0xB0, 0x53,				// Logical Max is 21424 (according to my w9013 feature report)
 		0x15, 0x00,						// Logical Min is 0
+		0x55, 0x0d,						// Unit Exponent (-3)
+		0x65, 0x11,						// Unit (cm)
 		0x75, 0x10,						// Report Size 16 (16bit - 2bytes)
 		0x95, 0x01,						// Report count is 1
 		0x81, 0x02,						// Input (Data, Var, Abs)
@@ -400,6 +402,8 @@ __ALIGN_BEGIN static uint8_t HID_PEN_ReportDesc[HID_MOUSE_REPORT_DESC_SIZE]  __A
 		0x09, 0x31,						// Usage : Y axis
 		0x26, 0x4E, 0x34,				// Logical Max is 13390 (according to my w9013 feature report)
 		0x15, 0x00,						// Logical Min is 0
+		0x55, 0x0d,						// Unit Exponent (-3)
+		0x65, 0x11,						// Unit (cm)
 		0x75, 0x10,						// Report Size 16 (16bit - 2bytes)
 		0x95, 0x01,						// Report count is 1
 		0x81, 0x02,						// Input (Data, Var, Abs)
