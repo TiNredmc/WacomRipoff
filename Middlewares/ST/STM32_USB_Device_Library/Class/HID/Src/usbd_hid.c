@@ -147,7 +147,7 @@ __ALIGN_BEGIN static uint8_t USBD_HID_CfgFSDesc[USB_HID_CONFIG_DESC_SIZ]  __ALIG
   0x00,         /*iConfiguration: Index of string descriptor describing
   the configuration*/
   0xE0,         /*bmAttributes: bus powered and Support Remote Wake-up */
-  0x32,         /*MaxPower 100 mA: this current is used for detecting Vbus*/
+  0xFA,         /*MaxPower 500 mA: this current is used for detecting Vbus*/
 
   /************** Descriptor of Joystick Mouse interface ****************/
   /* 09 */
@@ -197,7 +197,7 @@ __ALIGN_BEGIN static uint8_t USBD_HID_CfgHSDesc[USB_HID_CONFIG_DESC_SIZ]  __ALIG
   0x00,         /*iConfiguration: Index of string descriptor describing
   the configuration*/
   0xE0,         /*bmAttributes: bus powered and Support Remote Wake-up */
-  0x32,         /*MaxPower 100 mA: this current is used for detecting Vbus*/
+  0xFA,         /*MaxPower 500 mA: this current is used for detecting Vbus*/
 
   /************** Descriptor of Joystick Mouse interface ****************/
   /* 09 */
@@ -247,7 +247,7 @@ __ALIGN_BEGIN static uint8_t USBD_HID_OtherSpeedCfgDesc[USB_HID_CONFIG_DESC_SIZ]
   0x00,         /*iConfiguration: Index of string descriptor describing
   the configuration*/
   0xE0,         /*bmAttributes: bus powered and Support Remote Wake-up */
-  0x32,         /*MaxPower 100 mA: this current is used for detecting Vbus*/
+  0xFA,         /*MaxPower 500 mA: this current is used for detecting Vbus*/
 
   /************** Descriptor of Joystick Mouse interface ****************/
   /* 09 */
