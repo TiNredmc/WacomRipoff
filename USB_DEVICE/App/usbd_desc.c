@@ -67,7 +67,7 @@
 #define USBD_LANGID_STRING     1033
 #define USBD_MANUFACTURER_STRING     "TinLethax"
 #define USBD_PID_FS     26985
-#define USBD_PRODUCT_STRING_FS     "Wacom Rip off"
+#define USBD_PRODUCT_STRING_FS     "Wac0m Rip off"
 #define USBD_CONFIGURATION_STRING_FS     "HID Config"
 #define USBD_INTERFACE_STRING_FS     "HID Interface"
 

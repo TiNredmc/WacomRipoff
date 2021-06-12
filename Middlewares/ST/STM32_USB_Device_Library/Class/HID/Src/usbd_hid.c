@@ -369,6 +369,7 @@ __ALIGN_BEGIN static uint8_t HID_PEN_ReportDesc[HID_MOUSE_REPORT_DESC_SIZE]  __A
 0x05, 0x0D,								// Usage page : Digitizer
 0x09, 0x02,								// Usage : Pen
 0xA1, 0x01,								// Collection : Application
+	0x85, 0x02,							// Report ID : Pen
 	0x09, 0x20,							// Usage : Stylus
 	0xA1, 0x00,							// Collection : Physical
 		// Boolean 1 and 0 (1 means present, 0 means not present).
@@ -379,34 +380,42 @@ __ALIGN_BEGIN static uint8_t HID_PEN_ReportDesc[HID_MOUSE_REPORT_DESC_SIZE]  __A
 		0x09, 0x32,						// Usage : pen is in-range
 		0x25, 0x01,						// Logical Max is 1
 		0x15, 0x00,						// Logical Min is 0
-		0x75, 0x05,						// Report size is 5 usages
-		0x95, 0x01,		  				// Report count is 1
+		0x75, 0x01,						// Report size is 5 usages
+		0x95, 0x05,		  				// Report count is 1
 		0x81, 0x02,						// Input (Data, Var, Abs)
 		// fill all remain bit to make it byte align (8n).
-		0x75, 0x03,						// 1 Null usage
-		0x95, 0x01,						// fills 3 bits
+		0x75, 0x01,						// 1 Null usage
+		0x95, 0x03,						// fills 3 bits
 		0x81, 0x83,						// Input (Const, Var, Abs)
 
 		// Usage Page Generic Desktop will report X,Y coordinate and Pen pressure
 		0x05, 0x01,						// Usage Page : Generic Desktop
 
+		0xa4,							// Push
+
 		0x09, 0x30,						// Usage : X axis
 		0x26, 0xB0, 0x53,				// Logical Max is 21424 (according to my w9013 feature report)
-		0x15, 0x00,						// Logical Min is 0
+//		0x15, 0x00,						// Logical Min is 0
 		0x55, 0x0d,						// Unit Exponent (-3)
 		0x65, 0x11,						// Unit (cm)
+		0x35, 0x00,						// Physical min is 0 cm
+		0x46, 0xCA, 0x08,				// Physical max is 22.50 cm
 		0x75, 0x10,						// Report Size 16 (16bit - 2bytes)
 		0x95, 0x01,						// Report count is 1
 		0x81, 0x02,						// Input (Data, Var, Abs)
 
 		0x09, 0x31,						// Usage : Y axis
 		0x26, 0x4E, 0x34,				// Logical Max is 13390 (according to my w9013 feature report)
-		0x15, 0x00,						// Logical Min is 0
+//		0x15, 0x00,						// Logical Min is 0
 		0x55, 0x0d,						// Unit Exponent (-3)
 		0x65, 0x11,						// Unit (cm)
+		0x35, 0x00,						// Physical min is 0 cm
+		0x46, 0x78, 0x05,				// Physical max is 14.00 cm
 		0x75, 0x10,						// Report Size 16 (16bit - 2bytes)
 		0x95, 0x01,						// Report count is 1
 		0x81, 0x02,						// Input (Data, Var, Abs)
+
+		0xb4,							// Pop
 
 		// Pen tip pressure require Digitizer as a Usage page
 		0x05, 0x0D,						// Usage Page : Digitizer
