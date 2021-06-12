@@ -56,7 +56,7 @@ I2C_HandleTypeDef hi2c1;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-
+uint8_t hid_report_null[8]={2,0,0xff,0xff,0xff,0xff,0,0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -133,6 +133,8 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  //Wait for Interrupt
 	  __WFI();
+	  //USBD_HID_SendReport(&hUsbDeviceFS, hid_report_null, sizeof(hid_report_null));
+	  //HAL_Delay(10);
 
   }
   /* USER CODE END 3 */
