@@ -38,6 +38,7 @@ void wacom_query_device(I2C_HandleTypeDef *hi2c, struct wacom_features *features
 void wacom_i2c_irq()
 {
 	uint8_t *data = wacom_i2c.data;
+	uint16_t Yinvert;
 //	unsigned int x, y, pressure;
 //	unsigned char tsw, f1, f2, ers;
 
@@ -59,19 +60,21 @@ void wacom_i2c_irq()
 	wac_i2c->prox = data[3] & 0x20;*/
 
 	// Store HID report packet before sending to host
-	// hid_report[0] = (tip << 0) | (eraser << 1) | (f1 << 2) | (f2 << 3) | (prox << 4);
+	// hid_report[1] = (tip << 0) | (eraser << 1) | (f1 << 2) | (f2 << 3) | (prox << 4);
 	hid_report[1] = ((data[3] & 0x01 ? 1 : 0) << 4) | ((data[3] & 0x04 ? 1 : 0) << 3) | ((data[3] & 0x02 ? 1 : 0) << 2) | ((data[3] & 0x10 ? 1 : 0) << 1) | ((data[3] & 0x20 ? 1 : 0) << 0);
 	hid_report[1] |= ((data[3] & 0x0C ? 1 : 0) << 3);// Also report the eraser tip
 
-    // hid_report[1] and hid_report[2] is for X position
+    // hid_report[2] and hid_report[3] is for X position
 	hid_report[2] = data[6];// Send lower byte first
 	hid_report[3] = data[7];// Then send higher byte
 
-    // hid_report[3] and hid_report[4] is for Y position
-	hid_report[4] = data[4];// Send lower byte first
-	hid_report[5] = data[5];// Then send higher byte
+    // hid_report[4] and hid_report[5] is for Y position
+	Yinvert = data[5] << 8 | data[4];
+	Yinvert = 0x344E - Yinvert;// Invert Y axis
+	hid_report[4] = Yinvert;// Send lower byte first
+	hid_report[5] = Yinvert >> 8;// Then send higher byte
 
-    // hid_report[5] and hid_report[6] is for pressure
+    // hid_report[6] and hid_report[7] is for pressure
 	hid_report[6] = data[8];// Send lower byte first
 	hid_report[7] = data[9];// Then send higher byte
 
@@ -79,7 +82,7 @@ void wacom_i2c_irq()
 
 	// Send USB report
 	USBD_HID_SendReport(&hUsbDeviceFS, hid_report, sizeof(hid_report));
-	//printf("Wacom Raw Read %x , HID Raw Send %x\n", data[3], hid_report[1]);
+	printf("Wacom Raw Read %x , HID Raw Send %x\n", data[3], hid_report[1]);
 	// DONE
 	HAL_GPIO_WritePin(wacom_i2c.GPIOxLED, wacom_i2c.irq, GPIO_PIN_RESET);
 }
