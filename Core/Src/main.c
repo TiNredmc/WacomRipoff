@@ -120,6 +120,7 @@ int main(void)
   // Start chip probing ...
   printf("Start chip probing...\n");
   wacom_i2c_probe(&hi2c1, PAD_RST_GPIO_Port, PAD_RST_Pin, GPIOE, IRQ_STAT_Pin);
+  printf("Done, Next reset the chip once\n");
   HAL_GPIO_WritePin(GPIOE, INIT_STAT_Pin, GPIO_PIN_SET);
   /* USER CODE END 2 */
 

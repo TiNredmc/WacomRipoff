@@ -49,20 +49,44 @@ void wacom_i2c_irq()
 	HAL_GPIO_WritePin(wacom_i2c.GPIOxLED, wacom_i2c.irq, GPIO_PIN_SET);
 
 /*
-	tsw = data[3] & 0x01;
-	ers = data[3] & 0x04;
-	f1 = data[3] & 0x02;
-	f2 = data[3] & 0x10;
-	x = le16_to_cpup((__le16 *)&data[4]);
-	y = le16_to_cpup((__le16 *)&data[6]);
-	pressure = le16_to_cpup((__le16 *)&data[8]);
+	tsw = data[3] & 0x01;// tip switch
+	ers = data[3] & 0x04;// eraser
+	f1 = data[3] & 0x02;// Barrel button 1
+	f2 = data[3] & 0x10;// Barrel botton 2
+	x = le16_to_cpup((__le16 *)&data[4]);// X coordinate
+	y = le16_to_cpup((__le16 *)&data[6]);// Y coordinate
+	pressure = le16_to_cpup((__le16 *)&data[8]);// 0-2047 pressure
 
-	wac_i2c->prox = data[3] & 0x20;*/
+	wac_i2c->prox = data[3] & 0x20;// In-range indicator (pen is in range).
+*/
 
 	// Store HID report packet before sending to host
 	// hid_report[1] = (tip << 0) | (eraser << 1) | (f1 << 2) | (f2 << 3) | (prox << 4);
-	hid_report[1] = ((data[3] & 0x01 ? 1 : 0) << 4) | ((data[3] & 0x04 ? 1 : 0) << 3) | ((data[3] & 0x02 ? 1 : 0) << 2) | ((data[3] & 0x10 ? 1 : 0) << 1) | ((data[3] & 0x20 ? 1 : 0) << 0);
-	hid_report[1] |= ((data[3] & 0x0C ? 1 : 0) << 3);// Also report the eraser tip
+//	hid_report[1] = ((data[3] & 0x01 ? 1 : 0) << 4) | ((data[3] & 0x04 ? 1 : 0) << 3) | ((data[3] & 0x02 ? 1 : 0) << 2) | ((data[3] & 0x10 ? 1 : 0) << 1) | ((data[3] & 0x20 ? 1 : 0) << 0);
+//	hid_report[1] |= ((data[3] & 0x0C ? 1 : 0) << 3);// Also report the eraser tip
+
+	switch(data[3]){
+	case 0x20: // Pen is in range (Windows determine as Tip is in range)
+		hid_report[1] = 0x20;
+		break;
+
+	case 0x21: // Pen tip is pressing on surface
+		hid_report[1] = 0x21;
+		break;
+
+	case 0x28: // Eraser is in range
+		hid_report[1] = 0x22;// Set in-range and invert bit
+		break;
+
+	case 0x2c: // Erase is pressing on surface
+		hid_report[1] = 0x2A;// Set in-rage bit and also invert and eraser bit.
+		break;
+
+	default:
+		break;
+	}
+
+	hid_report[1] = hid_report[1] | ((data[3] & 0x02 ? 1 : 0) << 2) | ((data[3] & 0x10 ? 1 : 0) << 1);
 
     // hid_report[2] and hid_report[3] is for X position
 	hid_report[2] = data[6];// Send lower byte first
@@ -82,7 +106,7 @@ void wacom_i2c_irq()
 
 	// Send USB report
 	USBD_HID_SendReport(&hUsbDeviceFS, hid_report, sizeof(hid_report));
-	printf("Wacom Raw Read %x , HID Raw Send %x\n", data[3], hid_report[1]);
+	//printf("Wacom Raw Read %x , HID Raw Send %x\n", data[3], hid_report[1]);
 	// DONE
 	HAL_GPIO_WritePin(wacom_i2c.GPIOxLED, wacom_i2c.irq, GPIO_PIN_RESET);
 }

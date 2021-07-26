@@ -147,7 +147,7 @@ __ALIGN_BEGIN static uint8_t USBD_HID_CfgFSDesc[USB_HID_CONFIG_DESC_SIZ]  __ALIG
   0x00,         /*iConfiguration: Index of string descriptor describing
   the configuration*/
   0xE0,         /*bmAttributes: bus powered and Support Remote Wake-up */
-  0xFA,         /*MaxPower 500 mA: this current is used for detecting Vbus*/
+  0x32,         /*MaxPower 100 mA: this current is used for detecting Vbus*/
 
   /************** Descriptor of Joystick Mouse interface ****************/
   /* 09 */
@@ -157,8 +157,8 @@ __ALIGN_BEGIN static uint8_t USBD_HID_CfgFSDesc[USB_HID_CONFIG_DESC_SIZ]  __ALIG
   0x00,         /*bAlternateSetting: Alternate setting*/
   0x01,         /*bNumEndpoints*/
   0x03,         /*bInterfaceClass: HID*/
-  0x00,         /*bInterfaceSubClass : 1=BOOT, 0=no boot*/
-  0x00,         /*nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse*/
+  0x01,         /*bInterfaceSubClass : 1=BOOT, 0=no boot*/
+  0x02,         /*nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse*/
   0,            /*iInterface: Index of string descriptor*/
   /******************** Descriptor of Joystick Mouse HID ********************/
   /* 18 */
@@ -197,7 +197,7 @@ __ALIGN_BEGIN static uint8_t USBD_HID_CfgHSDesc[USB_HID_CONFIG_DESC_SIZ]  __ALIG
   0x00,         /*iConfiguration: Index of string descriptor describing
   the configuration*/
   0xE0,         /*bmAttributes: bus powered and Support Remote Wake-up */
-  0xFA,         /*MaxPower 500 mA: this current is used for detecting Vbus*/
+  0x32,         /*MaxPower 100 mA: this current is used for detecting Vbus*/
 
   /************** Descriptor of Joystick Mouse interface ****************/
   /* 09 */
@@ -247,7 +247,7 @@ __ALIGN_BEGIN static uint8_t USBD_HID_OtherSpeedCfgDesc[USB_HID_CONFIG_DESC_SIZ]
   0x00,         /*iConfiguration: Index of string descriptor describing
   the configuration*/
   0xE0,         /*bmAttributes: bus powered and Support Remote Wake-up */
-  0xFA,         /*MaxPower 500 mA: this current is used for detecting Vbus*/
+  0x32,         /*MaxPower 100 mA: this current is used for detecting Vbus*/
 
   /************** Descriptor of Joystick Mouse interface ****************/
   /* 09 */
@@ -317,118 +317,63 @@ __ALIGN_BEGIN static uint8_t USBD_HID_DeviceQualifierDesc[USB_LEN_DEV_QUALIFIER_
 
 __ALIGN_BEGIN static uint8_t HID_MOUSE_ReportDesc[HID_MOUSE_REPORT_DESC_SIZE]  __ALIGN_END =
 {
-  0x05,   0x01,
-  0x09,   0x02,
-  0xA1,   0x01,
-  0x09,   0x01,
+		0x05, 0x0D,								// Usage page : Digitizer
+		0x09, 0x02,								// Usage : Pen
+		0xA1, 0x01,								// Collection : Application
+			0x85, 0x02,							// Report ID for pen (report no 0x02).
+			0x09, 0x20,							// Usage : Stylus
+			0xA1, 0x00,							// Collection : Physical
+				// Boolean 1 and 0 (1 means present, 0 means not present).
+				0x09, 0x42,						// Usage : Pen Tip
+				0x09, 0x3C,						// Usage : Invert (Eraser Tip)
+				0x09, 0x44,						// Usage : 1st Barrel Button
+				0x09, 0x45,						// Usage : Eraser Tip
+				0x09, 0x5A,						// Usage : 2nd Barrel Button
+				0x09, 0x32,						// Usage : pen is in-range
+				0x25, 0x01,						// Logical Max is 1
+				0x15, 0x00,						// Logical Min is 0
+				0x75, 0x01,						// Report size is 6 usages
+				0x95, 0x06,						// Report count is 1
+				0x81, 0x02,						// Input (Data, Var, Abs)
+				// fill all remain bit to make it byte align (8n).
+				0x75, 0x01,						// 1 Null usage
+				0x95, 0x02,						// fills 2 bits
+				0x81, 0x83,						// Input (Const, Var, Abs)
 
-  0xA1,   0x00,
-  0x05,   0x09,
-  0x19,   0x01,
-  0x29,   0x03,
+				// Usage Page Generic Desktop will report X,Y coordinate and Pen pressure
+				0x05, 0x01,						// Usage Page : Generic Desktop
 
-  0x15,   0x00,
-  0x25,   0x01,
-  0x95,   0x03,
-  0x75,   0x01,
+				0x09, 0x30,						// Usage : X axis
+				0x26, 0xB0, 0x53,				// Logical Max is 21424 (according to my w9013 feature report)
+				0x15, 0x00,						// Logical Min is 0
+				0x55, 0x0d,						// Unit Exponent (-3)
+				0x65, 0x11,						// Unit (cm)
+				0x75, 0x10,						// Report Size 16 (16bit - 2bytes)
+				0x95, 0x01,						// Report count is 1
+				0x81, 0x02,						// Input (Data, Var, Abs)
 
-  0x81,   0x02,
-  0x95,   0x01,
-  0x75,   0x05,
-  0x81,   0x01,
+				0x09, 0x31,						// Usage : Y axis
+				0x26, 0x4E, 0x34,				// Logical Max is 13390 (according to my w9013 feature report)
+				0x15, 0x00,						// Logical Min is 0
+				0x55, 0x0d,						// Unit Exponent (-3)
+				0x65, 0x11,						// Unit (cm)
+				0x75, 0x10,						// Report Size 16 (16bit - 2bytes)
+				0x95, 0x01,						// Report count is 1
+				0x81, 0x02,						// Input (Data, Var, Abs)
 
-  0x05,   0x01,
-  0x09,   0x30,
-  0x09,   0x31,
-  0x09,   0x38,
+				// Pen tip pressure require Digitizer as a Usage page
+				0x05, 0x0D,						// Usage Page : Digitizer
+				0x09, 0x30,						// Usage : Tip Pressure
+				0x26, 0xFF, 0x07,				// Logical Max is 2047 (according to my w9013 capability, This is Wacom EMR)
+				0x15, 0x00,						// Logical Min is  0
+				0x75, 0x10,						// Report Size 16 (16bit - 2bytes)
+				0x95, 0x01,						// Report count is 1
+				0x81, 0x02,						// Input (Data, Var, Abs)
 
-  0x15,   0x81,
-  0x25,   0x7F,
-  0x75,   0x08,
-  0x95,   0x03,
-
-  0x81,   0x06,
-  0xC0,   0x09,
-  0x3c,   0x05,
-  0xff,   0x09,
-
-  0x01,   0x15,
-  0x00,   0x25,
-  0x01,   0x75,
-  0x01,   0x95,
-
-  0x02,   0xb1,
-  0x22,   0x75,
-  0x06,   0x95,
-  0x01,   0xb1,
-
-  0x01,   0xc0
+			0xC0,								// End Collection (Phy)
+		0xC0
 };
 
-__ALIGN_BEGIN static uint8_t HID_PEN_ReportDesc[HID_MOUSE_REPORT_DESC_SIZE]  __ALIGN_END = {
-0x05, 0x0D,								// Usage page : Digitizer
-0x09, 0x02,								// Usage : Pen
-0xA1, 0x01,								// Collection : Application
-	0x85, 0x02,							// Report ID : Pen
-	0x09, 0x20,							// Usage : Stylus
-	0xA1, 0x00,							// Collection : Physical
-		// Boolean 1 and 0 (1 means present, 0 means not present).
-		0x09, 0x42,						// Usage : Pen Tip
-		0x09, 0x3C,						// Usage : Invert (Eraser Tip)
-		0x09, 0x44,						// Usage : 1st Barrel Button
-		0x09, 0x5A,						// Usage : 2nd Barrel Button
-		0x09, 0x32,						// Usage : pen is in-range
-		0x25, 0x01,						// Logical Max is 1
-		0x15, 0x00,						// Logical Min is 0
-		0x75, 0x01,						// Report size is 5 usages
-		0x95, 0x05,		  				// Report count is 1
-		0x81, 0x02,						// Input (Data, Var, Abs)
-		// fill all remain bit to make it byte align (8n).
-		0x75, 0x01,						// 1 Null usage
-		0x95, 0x03,						// fills 3 bits
-		0x81, 0x83,						// Input (Const, Var, Abs)
-
-		// Usage Page Generic Desktop will report X,Y coordinate and Pen pressure
-		0x05, 0x01,						// Usage Page : Generic Desktop
-
-		0xa4,							// Push
-
-		0x09, 0x30,						// Usage : X axis
-		0x26, 0xB0, 0x53,				// Logical Max is 21424 (according to my w9013 feature report)
-//		0x15, 0x00,						// Logical Min is 0
-		0x55, 0x0d,						// Unit Exponent (-3)
-		0x65, 0x11,						// Unit (cm)
-		0x35, 0x00,						// Physical min is 0 cm
-		0x46, 0xCA, 0x08,				// Physical max is 22.50 cm
-		0x75, 0x10,						// Report Size 16 (16bit - 2bytes)
-		0x95, 0x01,						// Report count is 1
-		0x81, 0x02,						// Input (Data, Var, Abs)
-
-		0x09, 0x31,						// Usage : Y axis
-		0x26, 0x4E, 0x34,				// Logical Max is 13390 (according to my w9013 feature report)
-//		0x15, 0x00,						// Logical Min is 0
-		0x55, 0x0d,						// Unit Exponent (-3)
-		0x65, 0x11,						// Unit (cm)
-		0x35, 0x00,						// Physical min is 0 cm
-		0x46, 0x78, 0x05,				// Physical max is 14.00 cm
-		0x75, 0x10,						// Report Size 16 (16bit - 2bytes)
-		0x95, 0x01,						// Report count is 1
-		0x81, 0x02,						// Input (Data, Var, Abs)
-
-		0xb4,							// Pop
-
-		// Pen tip pressure require Digitizer as a Usage page
-		0x05, 0x0D,						// Usage Page : Digitizer
-		0x09, 0x30,						// Usage : Tip Pressure
-		0x26, 0xFF, 0x07,				// Logical Max is 2047 (according to my w9013 capability, This is Wacom EMR)
-		0x15, 0x00,						// Logical Min is  0
-		0x75, 0x10,						// Report Size 16 (16bit - 2bytes)
-		0x95, 0x01,						// Report count is 1
-		0x81, 0x02,						// Input (Data, Var, Abs)
-
-	0xC0,								// End Collection (Phy)
-0xC0									// End Collection (App)
-};
 /**
   * @}
   */
@@ -548,7 +493,7 @@ static uint8_t  USBD_HID_Setup(USBD_HandleTypeDef *pdev,
           if (req->wValue >> 8 == HID_REPORT_DESC)
           {
             len = MIN(HID_MOUSE_REPORT_DESC_SIZE, req->wLength);
-            pbuf = HID_PEN_ReportDesc;
+            pbuf = HID_MOUSE_ReportDesc;
           }
           else if (req->wValue >> 8 == HID_DESCRIPTOR_TYPE)
           {
