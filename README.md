@@ -9,7 +9,7 @@ It's easy to explain, when the pen is in-range of EMR pad. the w9013 sends the i
 Inside the irq handler the MCU will semi-polling-ly read data from w9013. this is a workaround to fix the low speed i2c limitation of physical connection (That's why I'm not running at 1MHz). when we received data from w9013, just do some simple switch case and array copying and then send the proper HID packet (according to the HID descriptor I PAINFULLY wrote).
 
 # The process(es) in HARD way.
-Starting with USB, The USB HID standard is currently 17 years old (just one year yunger than 2021 me xD). it's painfully took me about one month to just understanding USB HID standard and how to write the proper HID descriptor, and to make entire thing works, I need to read Microsoft hardware guidelines :
+Starting with USB, The USB HID standard is currently 17 years old (just one year younger than 2021 me xD). it's painfully took me about one month to just understanding USB HID standard and how to write the proper HID descriptor, and to make entire thing works, I need to read Microsoft hardware guidelines :
 ```
 https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/required-hid-top-level-collections
 https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/windows-pen-states
